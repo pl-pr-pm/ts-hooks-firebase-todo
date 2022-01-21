@@ -11,12 +11,38 @@ interface PROPS {
 }
 
 const TaskItem: React.FC<PROPS> = (props) => {
+  const [title, setTitle] = useState(props.title);
+
+  const editTask = () => {
+    db.collection("tasks").doc(props.id).set({ title: title }, { merge: true });
+  };
+
+  const deleteTask = () => {
+    db.collection("tasks").doc(props.id).delete();
+  };
+
   return (
-    <div>
-      <ListItem>
-        <h2>{props.title}</h2>
-      </ListItem>
-    </div>
+    <ListItem>
+      <h2>{props.title}</h2>
+      <Grid container justifyContent="flex-end">
+        <TextField
+          InputLabelProps={{
+            shrink: true,
+          }}
+          label="Edit task"
+          value={title}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
+        />
+      </Grid>
+      <button onClick={editTask}>
+        <EditOutlinedIcon />
+      </button>
+      <button onClick={deleteTask}>
+        <DeleteOutlineOutlined />
+      </button>
+    </ListItem>
   );
 };
 
